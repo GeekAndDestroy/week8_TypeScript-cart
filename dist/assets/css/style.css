@@ -1,0 +1,51 @@
+* {
+    margin: 0;
+}
+
+body {
+    color: black;
+}
+
+nav {
+    background-color: black;
+    height: 75px;
+    color: white
+}
+
+a {
+    color: white
+}
+
+a:hover {
+    color: gray
+}
+
+#login {
+    /* width: 50%; */
+    display: flex;
+    justify-content: center;
+}
+
+.form-control {
+    margin: 10px;
+}
+
+/* .container {
+    display: flex;
+
+} */
+#shop_cart {
+    border: solid 1px greenyellow;
+}
+
+#shop {
+    border: solid 1px;
+}
+
+#cart {
+    border: solid 1px;
+}
+
+#login {
+    border: solid 1px;
+}
