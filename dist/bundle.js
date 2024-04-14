@@ -45,19 +45,34 @@ class Item {
             <h3>${this._name}</h3>
             <p>${this._description}</p>
             <p>Price: $${this._price}</p>
-            <button class="btn btn-primary add-to-cart-button" onclick="addToCart('${this._id}')">Add to Cart</button>
+            <button class="btn btn-primary" id="add-to-cart-button">Add to Cart</button>
         `;
+        const addToCartButtons = itemDiv.querySelector("#add-to-cart-button");
+        addToCartButtons.onclick = () => {
+            user.cart.addToCart(this);
+        };
         return itemDiv;
+        // addToCartButtons.forEach(button => {
+        //     button.addEventListener("click", () => {
+        //         const itemId = (button as HTMLElement).dataset.itemId;
+        //         if (itemId) {
+        //             user.addToCart(itemId);
+        //         }
+        //     });
+        // });
+        // return itemDiv;
     }
 }
 exports.Item = Item;
+// <button class="btn btn-primary add-to-cart-button" onclick="addToCart('${this._id}')">Add to Cart</button>
 class User {
+    // private _shop: Shop;
     constructor(name, age) {
         this._id = (0, uuid_1.v4)();
         this._name = name;
         this._age = age;
         this._cart = [];
-        this._shop = new Shop();
+        // this._shop = new Shop();
     }
     get id() {
         return this._id;
@@ -78,6 +93,7 @@ class User {
         return this._cart;
     }
     addToCart(itemId) {
+        // const itemToAdd = shop.items.find(item => item.id === itemId);
         const itemToAdd = this._shop.items.find(item => item.id === itemId);
         if (itemToAdd) {
             this._cart.push(itemToAdd);
@@ -1167,19 +1183,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 if (shopDiv && cartDiv) {
                     shop.items.forEach(item => shopDiv.appendChild(item.itemElement()));
-                    // Display cart contents
                     cartDiv.appendChild(user.cartHTMLElement());
                 }
-                // Attach event listener to all "Add to Cart" buttons
-                const addToCartButtons = document.querySelectorAll(".add-to-cart-button");
-                addToCartButtons.forEach(button => {
-                    button.addEventListener("click", () => {
-                        const itemId = button.dataset.itemId;
-                        if (itemId) {
-                            user.addToCart(itemId);
-                        }
-                    });
-                });
+                // const addToCartButtons = document.querySelectorAll("#add-to-cart-button");
+                // addToCartButtons.forEach(button => {
+                //     button.addEventListener("click", () => {
+                //         const itemId = (button as HTMLElement).dataset.itemId;
+                //         if (itemId) {
+                //             user.addToCart(itemId);
+                //         }
+                //     });
+                // });
             }
         });
     }

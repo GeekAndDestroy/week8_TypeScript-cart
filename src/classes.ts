@@ -51,27 +51,46 @@ class Item {
             <h3>${this._name}</h3>
             <p>${this._description}</p>
             <p>Price: $${this._price}</p>
-            <button class="btn btn-primary add-to-cart-button" onclick="addToCart('${this._id}')">Add to Cart</button>
+            <button class="btn btn-primary" id="add-to-cart-button">Add to Cart</button>
         `;
-        return itemDiv;
+        const addToCartButtons = itemDiv.querySelector("#add-to-cart-button");
+        addToCartButtons.onclick = () => {
+            user.cart.addToCart(this);
+        }
+        return itemDiv
+        
+        
+        
+        
+        // addToCartButtons.forEach(button => {
+        //     button.addEventListener("click", () => {
+        //         const itemId = (button as HTMLElement).dataset.itemId;
+        //         if (itemId) {
+        //             user.addToCart(itemId);
+        //         }
+        //     });
+        // });
+        // return itemDiv;
     }
 }
-
+// <button class="btn btn-primary add-to-cart-button" onclick="addToCart('${this._id}')">Add to Cart</button>
 
 class User {
     private _id: string;
     private _name: string;
     private _age: number;
     private _cart: Item[];
-    private _shop: Shop;
-
+    // private _shop: Shop;
+  
+    
     constructor(name: string, age: number) {
         this._id = uuidv4();
         this._name = name;
         this._age = age;
         this._cart = [];
-        this._shop = new Shop();
+        // this._shop = new Shop();
     }
+
 
     public get id(): string {
         return this._id;
@@ -97,7 +116,10 @@ class User {
         return this._cart;
     }
 
+
+
     addToCart(itemId: string): void {
+        // const itemToAdd = shop.items.find(item => item.id === itemId);
         const itemToAdd = this._shop.items.find(item => item.id === itemId);
         if (itemToAdd) {
             this._cart.push(itemToAdd);

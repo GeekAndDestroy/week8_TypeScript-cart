@@ -17,21 +17,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 if (shopDiv && cartDiv) {
                     shop.items.forEach(item => shopDiv.appendChild(item.itemElement()));
-
-                    // Display cart contents
                     cartDiv.appendChild(user.cartHTMLElement());
                 }
-
-                // Attach event listener to all "Add to Cart" buttons
-                const addToCartButtons = document.querySelectorAll(".add-to-cart-button");
-                addToCartButtons.forEach(button => {
-                    button.addEventListener("click", () => {
-                        const itemId = (button as HTMLElement).dataset.itemId;
-                        if (itemId) {
-                            user.addToCart(itemId);
-                        }
-                    });
-                });
+                
+                // const addToCartButtons = document.querySelectorAll("#add-to-cart-button");
+                // addToCartButtons.forEach(button => {
+                //     button.addEventListener("click", () => {
+                //         const itemId = (button as HTMLElement).dataset.itemId;
+                //         if (itemId) {
+                //             user.addToCart(itemId);
+                //         }
+                //     });
+                // });
             }
         });
     }
