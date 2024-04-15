@@ -21,7 +21,7 @@ a:hover {
 }
 
 #login {
-    /* width: 50%; */
+    width: 50%;
     display: flex;
     justify-content: center;
 }
@@ -30,22 +30,21 @@ a:hover {
     margin: 10px;
 }
 
-/* .container {
-    display: flex;
-
-} */
-#shop_cart {
-    border: solid 1px greenyellow;
+.rmbtn {
+    margin: 5px;
 }
 
+.item {
+    width: 30%;
+    margin: 20px;
+    padding: 20px
+}
+/* 
 #shop {
-    border: solid 1px;
-}
+    display:
+} */
 
 #cart {
-    border: solid 1px;
-}
-
-#login {
-    border: solid 1px;
+    padding: 10px;
+    justify-content: center;
 }

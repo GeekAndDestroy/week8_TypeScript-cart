@@ -6,211 +6,6 @@
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Shop = exports.User = exports.Item = void 0;
-const uuid_1 = __webpack_require__(2);
-// Classes
-class Item {
-    constructor(name, price, description) {
-        this._id = (0, uuid_1.v4)();
-        this._name = name;
-        this._price = price;
-        this._description = description;
-    }
-    get id() {
-        return this._id;
-    }
-    get name() {
-        return this._name;
-    }
-    set name(name) {
-        this._name = name;
-    }
-    get price() {
-        return this._price;
-    }
-    set price(price) {
-        this._price = price;
-    }
-    get description() {
-        return this._description;
-    }
-    set description(description) {
-        this._description = description;
-    }
-    itemElement() {
-        const itemDiv = document.createElement("div");
-        itemDiv.classList.add("item", "card");
-        itemDiv.innerHTML = `
-            <h3>${this._name}</h3>
-            <p>${this._description}</p>
-            <p>Price: $${this._price}</p>
-            <button class="btn btn-primary" id="add-to-cart-button">Add to Cart</button>
-        `;
-        const addToCartButtons = itemDiv.querySelector("#add-to-cart-button");
-        addToCartButtons.onclick = () => {
-            user.cart.addToCart(this);
-        };
-        return itemDiv;
-        // addToCartButtons.forEach(button => {
-        //     button.addEventListener("click", () => {
-        //         const itemId = (button as HTMLElement).dataset.itemId;
-        //         if (itemId) {
-        //             user.addToCart(itemId);
-        //         }
-        //     });
-        // });
-        // return itemDiv;
-    }
-}
-exports.Item = Item;
-// <button class="btn btn-primary add-to-cart-button" onclick="addToCart('${this._id}')">Add to Cart</button>
-class User {
-    // private _shop: Shop;
-    constructor(name, age) {
-        this._id = (0, uuid_1.v4)();
-        this._name = name;
-        this._age = age;
-        this._cart = [];
-        // this._shop = new Shop();
-    }
-    get id() {
-        return this._id;
-    }
-    get name() {
-        return this._name;
-    }
-    set name(name) {
-        this._name = name;
-    }
-    get age() {
-        return this._age;
-    }
-    set age(age) {
-        this._age = age;
-    }
-    get cart() {
-        return this._cart;
-    }
-    addToCart(itemId) {
-        // const itemToAdd = shop.items.find(item => item.id === itemId);
-        const itemToAdd = this._shop.items.find(item => item.id === itemId);
-        if (itemToAdd) {
-            this._cart.push(itemToAdd);
-            this.updateCart();
-        }
-    }
-    removeFromCart(item) {
-        const index = this._cart.findIndex(cartItem => cartItem.id === item.id);
-        if (index !== -1) {
-            this._cart.splice(index, 1);
-        }
-    }
-    removeAllFromCart(item) {
-        this._cart = this._cart.filter(cartItem => cartItem.id !== item.id);
-        this.updateCart();
-    }
-    cartTotal() {
-        return Math.round((this._cart.reduce((total, item) => total + item.price, 0) + Number.EPSILON) * 100) / 100; //Math.round() and Number.EPSILON used to correctly round to 2 decimals
-        // Attempt to float using toFixed() method
-        // let total = this._cart.reduce((total, item) => total + item.price, 0)
-        // return total.toFixed(2);
-    }
-    printCart() {
-        console.log("Items in the cart:");
-        this._cart.forEach(item => console.log(item.name));
-    }
-    static loginUser(event) {
-        event.preventDefault();
-        const nameInput = document.getElementById("name");
-        const ageInput = document.getElementById("age");
-        const name = nameInput.value;
-        const age = parseInt(ageInput.value);
-        return new User(name, age);
-    }
-    cartHTMLElement() {
-        const cartContent = document.createElement("div");
-        cartContent.classList.add("cart-content");
-        if (this._cart.length === 0) {
-            const emptyCartMessage = document.createElement("p");
-            emptyCartMessage.textContent = "Cart is empty.";
-            cartContent.appendChild(emptyCartMessage);
-        }
-        else {
-            this._cart.forEach(item => {
-                const itemDiv = document.createElement("div");
-                itemDiv.textContent = `${item.name} - Quantity: ${this.getItemQuantity(item)} - Price: $${item.price}`;
-                const removeOneButton = document.createElement("button");
-                removeOneButton.classList.add("btn", "btn-warning");
-                removeOneButton.textContent = "-1";
-                removeOneButton.addEventListener("click", () => this.removeFromCart(item));
-                const removeAllButton = document.createElement("button");
-                removeAllButton.classList.add("btn", "btn-warning");
-                removeAllButton.textContent = "X";
-                removeAllButton.addEventListener("click", () => this.removeAllFromCart(item));
-                itemDiv.appendChild(removeOneButton);
-                itemDiv.appendChild(removeAllButton);
-                cartContent.appendChild(itemDiv);
-            });
-        }
-        return cartContent;
-    }
-    getItemQuantity(item) {
-        return this._cart.filter(cartItem => cartItem.id === item.id).length;
-    }
-    updateCart() {
-        const cartDiv = document.getElementById("cart");
-        if (cartDiv) {
-            cartDiv.innerHTML = "";
-            cartDiv.appendChild(this.cartHTMLElement());
-        }
-    }
-}
-exports.User = User;
-class Shop {
-    constructor() {
-        this._items = [
-            new Item("Collar", 15.99, "Make your pooch the most fashionable doggo in the neighborhood! This collar will turn heads and wag tails."),
-            new Item("Bed", 29.99, "Treat your fur baby to the lap of luxury with this plush bed fit for a king-sized pup. Warning: May cause excessive snoring."),
-            new Item("Toy", 8.49, "Keep your canine entertained for hours with this squeaky toy. Caution: May induce bouts of zoomies."),
-            new Item("Leash", 12.99, "Take your pup for a walk in style and show off your matching accessories. Warning: May attract envious stares from other dog parents."),
-            new Item("Treats", 5.99, "Reward your good boy or girl with these delicious treats. Warning: May lead to begging and puppy-dog eyes."),
-            new Item("Poop Bags", 4.99, "Keep your neighborhood clean and your walks embarrassment-free with these biodegradable bags. Warning: May induce a strong sense of responsibility.")
-        ];
-    }
-    get items() {
-        return this._items;
-    }
-    showItems() {
-        const shopDiv = document.getElementById("shop");
-        this._items.forEach(item => {
-            shopDiv.appendChild(item.itemElement());
-        });
-    }
-    getItemByName(name) {
-        return this._items.find(item => item.name === name);
-    }
-    getItemsByDescription(description) {
-        return this._items.filter(item => item.description.includes(description));
-    }
-    addItem(item) {
-        this._items.push(item);
-    }
-    getItems() {
-        return this._items;
-    }
-    getItemById(id) {
-        return this._items.find(item => item.id === id);
-    }
-}
-exports.Shop = Shop;
-
-
-/***/ }),
-/* 2 */
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-
 
 Object.defineProperty(exports, "__esModule", ({
   value: true
@@ -270,28 +65,28 @@ Object.defineProperty(exports, "version", ({
   }
 }));
 
-var _v = _interopRequireDefault(__webpack_require__(3));
+var _v = _interopRequireDefault(__webpack_require__(2));
 
-var _v2 = _interopRequireDefault(__webpack_require__(8));
+var _v2 = _interopRequireDefault(__webpack_require__(7));
 
-var _v3 = _interopRequireDefault(__webpack_require__(12));
+var _v3 = _interopRequireDefault(__webpack_require__(11));
 
-var _v4 = _interopRequireDefault(__webpack_require__(14));
+var _v4 = _interopRequireDefault(__webpack_require__(13));
 
-var _nil = _interopRequireDefault(__webpack_require__(16));
+var _nil = _interopRequireDefault(__webpack_require__(15));
 
-var _version = _interopRequireDefault(__webpack_require__(17));
+var _version = _interopRequireDefault(__webpack_require__(16));
 
-var _validate = _interopRequireDefault(__webpack_require__(6));
+var _validate = _interopRequireDefault(__webpack_require__(5));
 
-var _stringify = _interopRequireDefault(__webpack_require__(5));
+var _stringify = _interopRequireDefault(__webpack_require__(4));
 
-var _parse = _interopRequireDefault(__webpack_require__(10));
+var _parse = _interopRequireDefault(__webpack_require__(9));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 3 */
+/* 2 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -301,9 +96,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports["default"] = void 0;
 
-var _rng = _interopRequireDefault(__webpack_require__(4));
+var _rng = _interopRequireDefault(__webpack_require__(3));
 
-var _stringify = __webpack_require__(5);
+var _stringify = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -403,7 +198,7 @@ var _default = v1;
 exports["default"] = _default;
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -433,7 +228,7 @@ function rng() {
 }
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -444,7 +239,7 @@ Object.defineProperty(exports, "__esModule", ({
 exports["default"] = void 0;
 exports.unsafeStringify = unsafeStringify;
 
-var _validate = _interopRequireDefault(__webpack_require__(6));
+var _validate = _interopRequireDefault(__webpack_require__(5));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -482,7 +277,7 @@ var _default = stringify;
 exports["default"] = _default;
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -492,7 +287,7 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports["default"] = void 0;
 
-var _regex = _interopRequireDefault(__webpack_require__(7));
+var _regex = _interopRequireDefault(__webpack_require__(6));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -504,7 +299,7 @@ var _default = validate;
 exports["default"] = _default;
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -517,7 +312,7 @@ var _default = /^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[
 exports["default"] = _default;
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -527,9 +322,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports["default"] = void 0;
 
-var _v = _interopRequireDefault(__webpack_require__(9));
+var _v = _interopRequireDefault(__webpack_require__(8));
 
-var _md = _interopRequireDefault(__webpack_require__(11));
+var _md = _interopRequireDefault(__webpack_require__(10));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -538,7 +333,7 @@ var _default = v3;
 exports["default"] = _default;
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -549,9 +344,9 @@ Object.defineProperty(exports, "__esModule", ({
 exports.URL = exports.DNS = void 0;
 exports["default"] = v35;
 
-var _stringify = __webpack_require__(5);
+var _stringify = __webpack_require__(4);
 
-var _parse = _interopRequireDefault(__webpack_require__(10));
+var _parse = _interopRequireDefault(__webpack_require__(9));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -623,7 +418,7 @@ function v35(name, version, hashfunc) {
 }
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -633,7 +428,7 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports["default"] = void 0;
 
-var _validate = _interopRequireDefault(__webpack_require__(6));
+var _validate = _interopRequireDefault(__webpack_require__(5));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -673,7 +468,7 @@ var _default = parse;
 exports["default"] = _default;
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -901,7 +696,7 @@ var _default = md5;
 exports["default"] = _default;
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -911,11 +706,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports["default"] = void 0;
 
-var _native = _interopRequireDefault(__webpack_require__(13));
+var _native = _interopRequireDefault(__webpack_require__(12));
 
-var _rng = _interopRequireDefault(__webpack_require__(4));
+var _rng = _interopRequireDefault(__webpack_require__(3));
 
-var _stringify = __webpack_require__(5);
+var _stringify = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -949,7 +744,7 @@ var _default = v4;
 exports["default"] = _default;
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -965,7 +760,7 @@ var _default = {
 exports["default"] = _default;
 
 /***/ }),
-/* 14 */
+/* 13 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -975,9 +770,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports["default"] = void 0;
 
-var _v = _interopRequireDefault(__webpack_require__(9));
+var _v = _interopRequireDefault(__webpack_require__(8));
 
-var _sha = _interopRequireDefault(__webpack_require__(15));
+var _sha = _interopRequireDefault(__webpack_require__(14));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -986,7 +781,7 @@ var _default = v5;
 exports["default"] = _default;
 
 /***/ }),
-/* 15 */
+/* 14 */
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -1095,7 +890,7 @@ var _default = sha1;
 exports["default"] = _default;
 
 /***/ }),
-/* 16 */
+/* 15 */
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -1108,7 +903,7 @@ var _default = '00000000-0000-0000-0000-000000000000';
 exports["default"] = _default;
 
 /***/ }),
-/* 17 */
+/* 16 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -1118,7 +913,7 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports["default"] = void 0;
 
-var _validate = _interopRequireDefault(__webpack_require__(6));
+var _validate = _interopRequireDefault(__webpack_require__(5));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1166,38 +961,263 @@ var __webpack_exports__ = {};
 (() => {
 var exports = __webpack_exports__;
 
+// import { User, Shop } from './classes';
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const classes_1 = __webpack_require__(1);
-document.addEventListener("DOMContentLoaded", () => {
-    const loginForm = document.querySelector("form");
-    if (loginForm) {
-        loginForm.addEventListener("submit", (event) => {
-            const user = classes_1.User.loginUser(event);
-            if (user) {
-                const shop = new classes_1.Shop();
-                const shopDiv = document.getElementById("shop");
-                const cartDiv = document.getElementById("cart");
-                const loginDiv = document.getElementById("login");
-                if (loginDiv) {
-                    loginDiv.style.display = "none";
-                }
-                if (shopDiv && cartDiv) {
-                    shop.items.forEach(item => shopDiv.appendChild(item.itemElement()));
-                    cartDiv.appendChild(user.cartHTMLElement());
-                }
-                // const addToCartButtons = document.querySelectorAll("#add-to-cart-button");
-                // addToCartButtons.forEach(button => {
-                //     button.addEventListener("click", () => {
-                //         const itemId = (button as HTMLElement).dataset.itemId;
-                //         if (itemId) {
-                //             user.addToCart(itemId);
-                //         }
-                //     });
-                // });
+// document.addEventListener("DOMContentLoaded", () => {
+//     const loginForm = document.querySelector("form");
+//     if (loginForm) {
+//         loginForm.addEventListener("submit", (event) => {
+//             const user = User.loginUser(event);
+//             if (user) {
+//                 const shop = new Shop();
+//                 const shopDiv = document.getElementById("shop");
+//                 const cartDiv = document.getElementById("cart");
+//                 const loginDiv = document.getElementById("login");
+//                 if (loginDiv) {
+//                     loginDiv.style.display = "none";
+//                 }
+//                 if (shopDiv && cartDiv) {
+//                     shop.items.forEach(item => shopDiv.appendChild(item.itemElement()));
+//                     cartDiv.appendChild(user.cartHTMLElement());
+//                 }
+//                 // const addToCartButtons = document.querySelectorAll("#add-to-cart-button");
+//                 // addToCartButtons.forEach(button => {
+//                 //     button.addEventListener("click", () => {
+//                 //         const itemId = (button as HTMLElement).dataset.itemId;
+//                 //         if (itemId) {
+//                 //             user.addToCart(itemId);
+//                 //         }
+//                 //     });
+//                 // });
+//             }
+//         });
+//     }
+// });
+const uuid_1 = __webpack_require__(1);
+// Classes
+class Item {
+    constructor(_name, _price, _description, _id = (0, uuid_1.v4)()) {
+        this._name = _name;
+        this._price = _price;
+        this._description = _description;
+        this._id = _id;
+    }
+    get id() {
+        return this._id;
+    }
+    set id(value) {
+        this._id = value;
+    }
+    get name() {
+        return this._name;
+    }
+    set name(name) {
+        this._name = name;
+    }
+    get price() {
+        return this._price;
+    }
+    set price(price) {
+        this._price = price;
+    }
+    get description() {
+        return this._description;
+    }
+    set description(description) {
+        this._description = description;
+    }
+    itemElement() {
+        const itemDiv = document.createElement("div");
+        itemDiv.classList.add("item", "card");
+        itemDiv.innerHTML = `
+            <h3>${this._name}</h3>
+            <p>${this._description}</p>
+            <p>Price: $${this._price}</p>
+            <button class="btn btn-primary" id="add-to-cart-button">Add to Cart</button>
+        `;
+        const addToCartButtons = itemDiv.querySelector("#add-to-cart-button");
+        addToCartButtons.onclick = () => {
+            Shop.myUser.addToCart(this);
+        };
+        return itemDiv;
+    }
+}
+class User {
+    constructor(name, age) {
+        this._cart = [];
+        this._id = (0, uuid_1.v4)();
+        this._name = name;
+        this._age = age;
+        this._cart = [];
+    }
+    get id() {
+        return this._id;
+    }
+    get name() {
+        return this._name;
+    }
+    set name(name) {
+        this._name = name;
+    }
+    get age() {
+        return this._age;
+    }
+    set age(age) {
+        this._age = age;
+    }
+    get cart() {
+        return this._cart;
+    }
+    set cart(value) {
+        this._cart = value;
+    }
+    addToCart(item) {
+        this._cart.push(item);
+        Shop.updateCart();
+    }
+    //   removeQuantityFromCart(item: Item, quantity: number): void {
+    //     let remainingQuantity = quantity;
+    //     this.cart = this.cart.filter(cartItem => {
+    //         if (cartItem.id === item.id && remainingQuantity > 0) {
+    //             remainingQuantity--;
+    //             return false;
+    //         }
+    //         return true;
+    //     });
+    //     Shop.updateCart();
+    // }
+    //   removeQuantityFromCart(item: Item, quantity: number): void {
+    //     for (let i=0; i < quantity; i++){
+    //       let indexOfItem = this.cart.findIndex( cartItem => cartItem.id == item.id)
+    //       this.cart.splice(indexOfItem, 1);
+    //     }
+    //     Shop.updateCart();
+    // }
+    removeQuantityFromCart(item, quantity) {
+        let remove = 0;
+        while (quantity > remove) {
+            this.cart.splice(this.cart.findIndex((i) => i.id == item.id), 1);
+            remove++;
+        }
+        Shop.updateCart();
+    }
+    removeFromCart(item) {
+        this._cart = this._cart.filter(cartItem => cartItem.id !== item.id);
+        Shop.updateCart();
+    }
+    cartTotal() {
+        return Math.round((this._cart.reduce((total, item) => total + item.price, 0) + Number.EPSILON) * 100) / 100; //Math.round() and Number.EPSILON used to correctly round to 2 decimals
+        // Attempt to float using toFixed() method
+        // let total = this._cart.reduce((total, item) => total + item.price, 0)
+        // return total.toFixed(2);
+    }
+    printCart() {
+        console.log("Items in the cart:");
+        this._cart.forEach(item => console.log(item.name));
+    }
+    static loginUser() {
+        const nameInput = document.getElementById("name");
+        const ageInput = document.getElementById("age");
+        const name = nameInput.value;
+        const age = parseInt(ageInput.value);
+        return new User(name, age);
+    }
+    cartHTMLElement() {
+        const cartContent = document.createElement("div");
+        cartContent.classList.add("cart-content");
+        const uniqueItems = new Set(this._cart);
+        uniqueItems.forEach(item => {
+            const itemDiv = document.createElement("div");
+            itemDiv.textContent = `${item.name} - Quantity: ${this.getItemQuantity(item)} - Price: $${item.price}`;
+            const removeOneButton = document.createElement("button");
+            removeOneButton.classList.add("btn", "btn-warning", `remove-one-${item.id}`, "rmbtn");
+            removeOneButton.textContent = "-1";
+            removeOneButton.id = `${item.id}-rm1`;
+            removeOneButton.onclick = () => { Shop.myUser.removeQuantityFromCart(item, 1); };
+            const removeAllButton = document.createElement("button");
+            removeAllButton.classList.add("btn", "btn-warning", `remove-all-${item.id}`, "rmbtn");
+            removeAllButton.textContent = "X";
+            itemDiv.appendChild(removeOneButton);
+            itemDiv.appendChild(removeAllButton);
+            cartContent.appendChild(itemDiv);
+        });
+        const cartTotal = document.createElement("div");
+        cartTotal.textContent = `Your total is: ${this.cartTotal()}`;
+        cartContent.appendChild(cartTotal);
+        return cartContent;
+    }
+    addRemoveEventListeners() {
+        this._cart.forEach(item => {
+            const removeOneButtons = document.getElementById(`${item.id}-rm1`) || null;
+            if (removeOneButtons) {
+                removeOneButtons.onclick = () => { var _a; return (_a = Shop.myUser) === null || _a === void 0 ? void 0 : _a.removeQuantityFromCart(item, 1); };
             }
+            ;
+            const removeAllButtons = document.querySelectorAll(`.remove-all-${item.id}`);
+            removeAllButtons.forEach(button => {
+                button.addEventListener("click", () => Shop.myUser.removeFromCart(item));
+            });
         });
     }
-});
+    getItemQuantity(item) {
+        return this._cart.filter(cartItem => cartItem.id === item.id).length;
+    }
+}
+class Shop {
+    constructor(_items = []) {
+        this._items = _items;
+        this._items = _items;
+        this.items.push(new Item("Collar", 15.99, "Make your pooch the most fashionable doggo in the neighborhood! This collar will turn heads and wag tails.")),
+            this.items.push(new Item("Bed", 29.99, "Treat your fur baby to the lap of luxury with this plush bed fit for a king-sized pup. Warning: May cause excessive snoring.")),
+            this.items.push(new Item("Toy", 8.49, "Keep your canine entertained for hours with this squeaky toy. Caution: May induce bouts of zoomies.")),
+            this.items.push(new Item("Leash", 12.99, "Take your pup for a walk in style and show off your matching accessories. Warning: May attract envious stares from other dog parents.")),
+            this.items.push(new Item("Treats", 5.99, "Reward your good boy or girl with these delicious treats. Warning: May lead to begging and puppy-dog eyes.")),
+            this.items.push(new Item("Poop Bags", 4.99, "Keep your neighborhood clean and your walks embarrassment-free with these biodegradable bags. Warning: May induce a strong sense of responsibility."));
+        this.showItems();
+        Shop.myUser.cart = [];
+        Shop.updateCart();
+    }
+    get items() {
+        return this._items;
+    }
+    set items(value) {
+        this._items = value;
+    }
+    showItems() {
+        const shopDiv = document.getElementById("shop");
+        this._items.forEach(item => {
+            shopDiv.appendChild(item.itemElement());
+        });
+    }
+    // static updateCart(): void {
+    //     const cartDiv = document.getElementById("cart") as HTMLDivElement;
+    //     if (cartDiv) {
+    //         cartDiv.innerHTML = "";
+    //         cartDiv.replaceChildren(Shop.myUser!.cartHTMLElement());
+    //     }
+    // }
+    static updateCart() {
+        const cartDiv = document.getElementById("cart");
+        if (Shop.myUser.cart.length <= 0) {
+            cartDiv.innerHTML = `<H2>My Cart</H2>No items in cart`;
+        }
+        else {
+            cartDiv.replaceChildren(Shop.myUser.cartHTMLElement());
+            cartDiv.innerHTML = ('<H2>My Cart</H2>' + cartDiv.innerHTML);
+            Shop.myUser.addRemoveEventListeners();
+        }
+    }
+    static loginUser(event) {
+        event.preventDefault();
+        Shop.myUser = User.loginUser();
+        if (Shop.myUser) {
+            document.getElementById("login").remove();
+            new Shop();
+        }
+    }
+}
+// Driver Code
+document.getElementById("loginbutton").addEventListener("click", (event) => Shop.loginUser(event));
 
 })();
 
